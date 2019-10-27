@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const uuidv5 = require("uuid/v5");
 
 /**initialise express and cors */
 const app = express();
@@ -26,4 +27,11 @@ app.post("/", (req, res) => {
   });
 
   exports.usersDetails = functions.https.onRequest(app);
+
+  exports.createUserId = functions.database.ref("/userDetails/{userId}")
+  .onCreate((snapshot, context) => 
+  {
+    const userId = uuidv5(Date.now().toString(), uuidv5.URL);
+    return snapshot.ref.update({ userid: userId });
+  });
   
